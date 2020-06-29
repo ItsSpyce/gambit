@@ -1,17 +1,20 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const expressws = require('express-ws');
+const router = require('./router');
 
 const app = express();
 const port = process.env.PORT || 5000;
+const ws = expressws(app);
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// API calls
-app.get('*', (req, res) => {
-  res.send();
-});
+router.configureRest(app);
+router.configureSocket(app);
 
 if (process.env.NODE_ENV === 'production') {
   // Serve any static files
