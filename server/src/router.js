@@ -63,10 +63,20 @@ function configureRest(app) {
     const games = gameService.getGamesPage(parseInt(req.query.page) || 1);
     res.json(games);
   });
+  app.route('/api/game/:id/password').post((req, res) => {
+    const { password } = req.body;
+    const game = gameService.getGame(req.params.id);
+    if (!game) return sendStatus(404);
+    if (game.config.password === password) {
+      return res.sendStatus(200);
+    } else {
+      return res.sendStatus(403);
+    }
+  });
   app
     .route('/api/game/:id')
     .get((req, res) => {
-      const id = req.param('id');
+      const { id } = req.params;
       if (!id) {
         return res.sendStatus(404);
       }
@@ -78,12 +88,12 @@ function configureRest(app) {
       if (!ownerId) {
         return res.sendStatus(403);
       }
-      const game = gameService.createGame(game, req.body);
+      const game = gameService.createGame(ownerId, req.body.name, req.body);
       return res.json(game);
     })
     .put((req, res) => {
       const { USER_ID: ownerId, AUTH_TOKEN: authToken } = req.cookies || {};
-      const id = req.param('id');
+      const { id } = req.params;
       if (!ownerId || !id) {
         return res.sendStatus(403);
       }
@@ -100,7 +110,7 @@ function configureRest(app) {
     })
     .delete((req, res) => {
       const { USER_ID: ownerId, AUTH_TOKEN: authToken } = req.cookies || {};
-      const id = req.param('id');
+      const { id } = req.params;
       if (!ownerId || !id) {
         return res.sendStatus(403);
       }

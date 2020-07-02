@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
+import theme from '../../theme';
 
 const StyledNavbar = styled.div`
   display: block;
   width: 100%;
   height: 60px;
-  background-color: #232323;
+  background-color: ${theme.GRAY_5};
 `;
 
 const UsernameInput = styled.input.attrs({ type: 'text' })`

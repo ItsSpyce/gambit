@@ -3,7 +3,7 @@ const Round = require('./round');
 
 const defaultConfig = new GameConfig({
   isPrivate: false,
-  maxPlayers: 0,
+  maxPlayers: 3,
   roundCount: 3,
   timerLength: 4 * 60,
 });
@@ -12,11 +12,13 @@ class Game {
   /**
    *
    * @param {string} id
-   * @param {*} ownerId
-   * @param {*} config
+   * @param {string} name
+   * @param {string} ownerId
+   * @param {GameConfig} config
    */
-  constructor(id, ownerId, config = defaultConfig) {
+  constructor(id, name, ownerId, config = defaultConfig) {
     this.id = id;
+    this.name = name;
     this.ownerId = ownerId;
     this.config = config;
     this.players = [];

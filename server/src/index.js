@@ -16,7 +16,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 router.configureRest(app);
 router.configureSocket(app);
 
-if (process.env.NODE_ENV === 'production') {
+process.env.IS_DEV = process.env.NODE_ENV !== 'production';
+
+if (process.env.IS_DEV) {
   // Serve any static files
   app.use(express.static(path.join(__dirname, 'client/build')));
 

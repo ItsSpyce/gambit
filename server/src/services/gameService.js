@@ -29,7 +29,14 @@ function getGames(...ids) {
  * @returns {Array<Game>}
  */
 function getAllGames() {
-  return Object.values(games);
+  // strip out all passwords
+  return Object.values(games).reduce(
+    (games, game) => [
+      ...games,
+      { ...game, config: { ...game.config, password: undefined } },
+    ],
+    []
+  );
 }
 
 /**
@@ -40,19 +47,21 @@ function getAllGames() {
  */
 function getGamesPage(page) {
   const pageIndex = (page - 1) * 20;
-  return Object.values(games).slice(pageIndex, pageIndex + 20);
+  const pagedGames = getAllGames().slice(pageIndex, pageIndex + 20);
+  return pagedGames;
 }
 
 /**
  *
  * @param {string} ownerId
+ * @param {string} name
  * @param {GameConfig} options
  *
  * @returns {Game}
  */
-function createGame(ownerId, options = Game.defaultConfig) {
+function createGame(ownerId, name, options = Game.defaultConfig) {
   const id = uuid();
-  const game = new Game(id, ownerId, options);
+  const game = new Game(id, name, ownerId, options);
   games[id] = game;
   return game;
 }
@@ -81,6 +90,16 @@ function updateGame(id, { config = null, players = null, isOver = null }) {
  */
 function deleteGame(id) {
   delete games[id];
+}
+
+if (process.env.NODE_ENV !== 'production') {
+  const testUser = uuid();
+  createGame(uuid(), 'Public Game');
+  createGame(
+    uuid(),
+    'Private Game',
+    new GameConfig({ isPrivate: true, password: 'Test123', maxPlayers: 4 })
+  );
 }
 
 module.exports = {

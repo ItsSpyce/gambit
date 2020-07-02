@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import Navbar from './components/navbar';
 import Home from './pages/home';
 import Game from './pages/game';
 import userService from './services/userService';
 import gameService from './services/gameService';
+import theme from './theme';
 
 const StyledApp = styled.div`
   margin: 0;
-  color: white;
+  color: ${theme.WHITE};
+  background-color: ${theme.GRAY_4};
+  font-family: 'Roboto', sans-serif;
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 100;
+  }
 `;
 
 const AppContent = styled.div`
@@ -50,12 +59,15 @@ const App = () => {
         )}
         <AppContent>
           <Switch>
-            <Route exact path="/">
-              <Home user={user} />
-            </Route>
-            <Route path="/game/:id">
-              <Game user={user} />
-            </Route>
+            <Route
+              exact
+              path="/"
+              children={(props) => <Home {...props} user={user} />}
+            ></Route>
+            <Route
+              path="/game/:id"
+              children={(props) => <Game {...props} user={user} />}
+            ></Route>
           </Switch>
         </AppContent>
       </StyledApp>
